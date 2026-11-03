@@ -1,4 +1,4 @@
-import {Map, setWorkerUrl} from 'maplibre-gl';
+import {GeolocateControl, Map, setWorkerUrl} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import hawkerCentresUrl from '../Dataset/Raw/hawkercenters.geojson?url';
@@ -24,8 +24,18 @@ map.on('load', () => {
         source: 'hawker-centres',
         paint: {
             'circle-radius': 6,
-            'circle-color': 'rgb(250, 12, 12)'
+            'circle-color': 'rgb(12, 68, 250)'
         }
     });
 });
+
+// Add geolocate control to the map.
+map.addControl(
+    new GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true
+    })
+);
 
