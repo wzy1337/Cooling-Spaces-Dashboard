@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cooling Spaces Dashboard</title>
-  <style>html, body, #map { margin: 0; height: 100%; }</style>
+  <style>
+    html, body, #map {
+      margin: 0;
+      height: 100%;
+    }
+
+    .maplibregl-ctrl button.maplibregl-ctrl-geolocate {
+      width: 56px;
+      height: 56px;
+    }
+
+    .maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon {
+      background-size: 32px 32px;
+    }
+  </style>
 </head>
 <body>
   <div id="map"></div>

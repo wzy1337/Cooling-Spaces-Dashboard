@@ -1,9 +1,11 @@
-import {GeolocateControl, Map, setWorkerUrl} from 'maplibre-gl';
+import {GeolocateControl, Map, Popup, setWorkerUrl} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import hawkerCentresUrl from '../Dataset/Raw/hawkercenters.geojson?url';
 
 setWorkerUrl(workerUrl);
+
+let hawkerPopup;
 
 const map = new Map({
     container: 'map', // container id #HTML Element
@@ -23,19 +25,51 @@ map.on('load', () => {
         type: 'circle',
         source: 'hawker-centres',
         paint: {
-            'circle-radius': 6,
-            'circle-color': 'rgb(12, 68, 250)'
+            'circle-radius': 10,
+            'circle-color': 'rgb(250, 99, 12)',
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff'
         }
+    });
+
+    map.addLayer({
+        id: 'hawker-centres-symbol',
+        type: 'symbol',
+        source: 'hawker-centres',
+        layout: {
+            'text-field': '🍴',
+            'text-size': 10,
+            'text-allow-overlap': true
+        }
+    });
+
+    map.on('mouseenter', 'hawker-centres', (event) => {
+        map.getCanvas().style.cursor = 'pointer';
+
+        const feature = event.features?.[0];
+        if (!feature || feature.geometry.type !== 'Point') {
+            return;
+        }
+
+        hawkerPopup = new Popup()
+            .setLngLat(feature.geometry.coordinates)
+            .setText(feature.properties?.NAME ?? 'Hawker centre')
+            .addTo(map);
+    });
+
+    map.on('mouseleave', 'hawker-centres', () => {
+        map.getCanvas().style.cursor = '';
+        hawkerPopup?.remove();
     });
 });
 
-// Add geolocate control to the map.
 map.addControl(
     new GeolocateControl({
         positionOptions: {
             enableHighAccuracy: true
         },
-        trackUserLocation: true
-    })
+        trackUserLocation: true,
+        showUserHeading: true
+    }),
+    'top-right'
 );
-
